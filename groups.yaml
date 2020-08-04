@@ -1,0 +1,78 @@
+
+########################################################################################################################
+# LIGHTS/SWITCHES
+########################################################################################################################
+Basement:
+  - light.bar
+  - light.basement_bath
+  - light.basement_closet
+  - light.basement_hallway
+  - light.basement_stairs
+  - light.exercise_room
+  - light.family_room_in
+  - light.family_room_out
+  - light.mechanical_room
+  - light.server_room
+  - light.server_room_storage
+
+Main Floor:
+  - light.deck
+  - light.deck_string
+  - light.dining_room
+  - light.front_porch
+  - light.foyer
+  - light.garage
+  - light.kitchen
+  - light.kitchen_sink
+  - light.landscape
+  - light.laundry_room
+  - light.living_room
+  - light.living_room_lamp
+  - switch.living_room_outlets
+  - light.living_room_sconce
+  - light.mud_room
+  - light.mud_room_closet
+  - light.pantry
+  - light.play_room
+  - light.play_room_tree
+  - switch.pond_pump
+  - light.powder_room
+  - light.seasonal
+  - switch.workshop_left
+  - switch.workshop_right
+
+Upstairs:
+  - light.anthonys_nightstand
+  - light.kids_bath
+  - light.maddies_nightlight
+  - light.maddies_room
+  - light.maddies_string
+  - light.master_bedroom
+  - light.master_bath
+  - light.ollies_nightlight
+  - light.ollies_room
+  - light.office
+  - light.office_closet
+  - light.saras_nightstand
+  - light.upstairs_hallway
+
+Exhaust Fans:
+  - switch.exhaust_basement_bath
+  - switch.exhaust_kids_bath
+  - switch.exhaust_master_bath
+  - switch.exhaust_powder_room
+
+########################################################################################################################
+# SENSORS
+########################################################################################################################
+presence:
+  - person.anthony_pluth
+  - person.sara_pluth
+  - person.maddie
+  - person.ollie
+
+adults:
+  - person.anthony_pluth
+  - person.sara_pluth
+  - person.deb
+  - person.morris

@@ -1,0 +1,80 @@
+light.pantry:
+  icon: mdi:food
+light.play_room_tree:
+  icon: mdi:pine-tree
+switch.pond_pump:
+  icon: mdi:fountain
+light.ollies_room:
+  icon: mdi:bed
+light.maddies_room:
+  icon: mdi:bed
+switch.maddies_tree:
+  icon: mdi:pine-tree
+switch.ollie_s_tree:
+  icon: mdi:pine-tree
+switch.basement_tree:
+  icon: mdi:pine-tree
+light.exercise_room:
+  icon: mdi:dumbbell
+light.bar:
+  icon: mdi:glass-cocktail
+light.server_room_storage:
+  icon: mdi:server
+light.kids_bath:
+  icon: mdi:shower
+light.powder_room:
+  icon: mdi:toilet
+light.basement_bath:
+  icon: mdi:toilet
+light.anthonys_nightstand:
+  icon: mdi:lamp
+light.saras_nightstand:
+  icon: mdi:lamp
+sensor.anthony_s_qc700:
+  icon: mdi:headphones
+light.basement_stairs:
+  icon: mdi:stairs
+media_player.deck_speaker:
+  icon: mdi:speaker
+light.dining_room:
+  icon: mdi:table-chair
+light.family_room_in:
+  icon: mdi:projector
+switch.family_room_out_41:
+  hidden: true
+light.family_room_out:
+  icon: mdi:projector
+media_player.play_room_speaker:
+  icon: mdi:google-home
+light.garage:
+  icon: mdi:car
+media_player.garage:
+  icon: mdi:google-home
+media_player.garage_speakers:
+  icon: mdi:speaker
+alarm_control_panel.house:
+  icon: mdi:alarm-bell
+light.kitchen:
+  icon: mdi:stove
+light.kitchen_sink:
+  icon: mdi:ceiling-light
+media_player.kitchen_display:
+  icon: mdi:google-home
+light.landscape:
+  icon: mdi:tree
+light.laundry_room:
+  icon: mdi:washing-machine
+light.light_1:
+  hidden: true
+light.living_room:
+  icon: mdi:sofa
+light.living_room_lamp:
+  icon: mdi:floor-lamp
+media_player.maddie_s_room_speaker:
+  icon: mdi:google-home
+light.master_bath:
+  icon: mdi:shower
+light.master_bedroom:
+  icon: mdi:fan
+media_player.living_room_speaker:
+  icon: mdi:google-home

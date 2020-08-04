@@ -1,0 +1,120 @@
+
+anthony_ping:
+  hide_if_away: false
+  icon:
+  mac:
+  name: anthony ping
+  picture:
+  track: true
+
+sara_ping:
+  hide_if_away: false
+  icon:
+  mac:
+  name: sara ping
+  picture:
+  track: true
+
+anthony_face:
+  hide_if_away: false
+  icon:
+  mac:
+  name: anthony face
+  picture:
+  track: true
+
+sara_face:
+  hide_if_away: false
+  icon:
+  mac:
+  name: sara face
+  picture:
+  track: true
+
+maddie_face:
+  hide_if_away: false
+  icon:
+  mac:
+  name: maddie face
+  picture:
+  track: true
+
+ollie_face:
+  hide_if_away: false
+  icon:
+  mac:
+  name: ollie face
+  picture:
+  track: true
+
+deb_face:
+  hide_if_away: false
+  icon:
+  mac:
+  name: deb face
+  picture:
+  track: true
+
+morris_face:
+  hide_if_away: false
+  icon:
+  mac:
+  name: morris face
+  picture:
+  track: true
+
+anthony_s_work_keys:
+  hide_if_away: false
+  icon:
+  mac:
+  name: anthony s work keys
+  picture:
+  track: true
+
+saras_extra_keys_room_presence:
+  hide_if_away: false
+  icon:
+  mac:
+  name: saras extra keys room presence
+  picture:
+  track: true
+
+anthonys_extra_keys_room_presence:
+  hide_if_away: false
+  icon:
+  mac:
+  name: anthonys extra keys room presence
+  picture:
+  track: true
+
+extra_minew_room_presence:
+  hide_if_away: false
+  icon:
+  mac:
+  name: extra minew room presence
+  picture:
+  track: true
+
+anthonys_work_keys_room_presence:
+  hide_if_away: false
+  icon:
+  mac:
+  name: anthonys work keys room presence
+  picture:
+  track: true
+
+saras_keys_room_presence:
+  hide_if_away: false
+  icon:
+  mac:
+  name: saras keys room presence
+  picture:
+  track: true
+
+maddies_watch_room_presence:
+  hide_if_away: false
+  icon:
+  mac:
+  name: maddies watch room presence
+  picture:
+  track: true

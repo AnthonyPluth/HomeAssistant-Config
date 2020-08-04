@@ -1,0 +1,44 @@
+# warning beeps
+#need to turn off thermostat away mode when returning home
+
+################################################################################
+# Alarm automations
+################################################################################
+# - alias: '[Alarm] Panic Mode'
+#   trigger:
+#     platform: state
+#     entity_id: alarm_control_panel.house
+#     value_template: '{{ state.attributes.panic_mode }}'
+#     to: 'ACTIVE'
+#   action:
+#   - service: switch.turn_on
+#     entity_id: switch.siren
+#   - service: notify.android
+#     data_template:
+#       message: 'PANIC MODE TRIGGERED!!!'
+#     data:
+#       title: 'ALARM'
+#       data:
+#         actions:
+#         - action: cancel_alarm
+#         #   icon: mdi:lock
+#           title: 'False Alarm'
+#         - action: alarm_full_blast
+#         #   icon: mdi:garage
+#           title: 'Sound Siren'
+#         color: '#fc1b02'
+
+################################################################################
+
+# - alias: '[Alarm] Away Mode Arming'
+#   trigger:
+#   - platform: state
+#     entity_id: alarm_control_panel.house
+#     to: 'pending'
+#   action:
+#   - data:
+#       message: 'House alarm activating, ensure all doors and windows are closed'
+#     service: notify.example_phone_tts
+
+################################################################################
+

@@ -1,0 +1,10 @@
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+.cloud/
+.storage/
+.homekit.state
+secrets.yaml
+service-account.json

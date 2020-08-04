@@ -1,0 +1,50 @@
+##########################################
+set_thermostat_to_home:
+  sequence:
+  - delay:
+      milliseconds: 1
+  - service: climate.set_preset_mode
+    data:
+      entity_id: climate.home_2
+      preset_mode: 'home'
+set_thermostat_to_away:
+  sequence:
+  - delay:
+      milliseconds: 1
+  - service: climate.set_preset_mode
+    data:
+      entity_id: climate.home_2
+      preset_mode: 'away'
+###########################################
+tablets_navigate_to_alarm_panel:
+  sequence:
+  - delay: 
+      milliseconds: 1
+  - service: rest_command.master_bedroom_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: rest_command.master_bedroom_tablet_cmd
+    data:
+      cmd: loadURL&url=https://ha.pluth.org/alarm
+  - service: rest_command.hallway_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: rest_command.hallway_tablet_cmd
+    data:
+      cmd: loadURL&url=https://ha.pluth.org/alarm
+tablets_navigate_to_tablet_view:
+  sequence:
+  - delay: 
+      milliseconds: 1
+  - service: rest_command.master_bedroom_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: rest_command.master_bedroom_tablet_cmd
+    data:
+      cmd: loadURL&url=https://ha.pluth.org/tablet-view/tablet
+  - service: rest_command.hallway_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: rest_command.hallway_tablet_cmd
+    data:
+      cmd: loadURL&url=https://ha.pluth.org/tablet-view/tablet

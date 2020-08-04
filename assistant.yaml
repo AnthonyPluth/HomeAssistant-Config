@@ -1,0 +1,84 @@
+################################################################################
+# Google Assistant
+################################################################################
+  project_id: !secret google_pid
+  service_account: !include service-account.json
+  report_state: true
+  expose_by_default: true
+  exposed_domains:
+  - alarm_control_panel
+  - binary_sensor
+  - cover
+  - lock
+  - light
+  - switch
+#   - sensor
+  secure_devices_pin: !secret alarm_code
+  entity_config:
+# -------------------------------------------------------------------------------
+    group.basement:
+      name: Basement Lights
+      room: Basement
+    group.main_floor:
+      name: Main Floor Lights
+      room: Main Floor
+    group.upstairs:
+      name: Upstairs Lights
+      room: Upstairs
+# -------------------------------------------------------------------------------
+    light.maddies_room:
+      name: "Maddie's Big Lights"
+      aliases: "Maddie's Light"
+      room: "Maddie's Room"
+    light.maddies_nightlight:
+      name: "Maddie's Nightlight"
+      room: "Maddie's Room"
+    light.maddies_string:
+      name: "Maddie's String Lights"
+      room: "Maddie's Room"
+#-------------------------------------------------------------------------------
+    light.ollies_room:
+      name: "Ollie's Big Light"
+      aliases: "Ollie's Light"
+      room: "Ollie's Room"
+    light.ollies_nightlight:
+      name: "Ollie's Nightlight"
+      room: "Ollie's Room"
+#-------------------------------------------------------------------------------
+    light.anthonys_nightstand:
+      name: "Anthony's Light"
+      room: Master Bedroom
+    light.master_bedroom:
+      name: Master Bedroom Fan
+      room: Master Bedroom
+    light.saras_nightstand:
+      name: "Sara's Light"
+      room: Master Bedroom
+#-------------------------------------------------------------------------------
+    switch.armed_mud_room_door:
+      expose: False
+    switch.armed_workshop_motion:
+      expose: False
+    switch.armed_basement_leak_sensor:
+      expose: False
+    switch.armed_living_room_glass:
+      expose: False
+    switch.armed_laundry_room_glass:
+      expose: False
+    switch.armed_kitchen_glass:
+      expose: False
+    switch.armed_play_room_glass:
+      expose: False
+    switch.armed_main_stall_tilt:
+      expose: False
+    switch.neato_schedule:
+      expose: False
+#-------------------------------------------------------------------------------
+    switch.zone_5:
+      expose: False
+    switch.zone_6:
+      expose: False
+    switch.zone_7:
+      expose: False
+    switch.zone_8:
+      expose: False

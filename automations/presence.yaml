@@ -1,0 +1,56 @@
+################################################################################
+# Presence-Activated Events
+################################################################################
+
+# - alias: '[Presence] Unlock Front Door for Sara'
+#   trigger:
+#   - platform: state
+#     entity_id:
+#       - device_tracker.sara_face_front_door
+      
+#     to: home
+#   condition:
+#     condition: or
+#     conditions:
+#     - condition: state
+#       entity_id: person.sara_pluth
+#       state: 'not_home'
+#     - condition: and
+#       conditions:
+#       - condition: template
+#         value_template: >
+#              {{ (as_timestamp(now()) - as_timestamp(states.person.sara.last_changed)) < 15 }}
+#       - condition: state
+#         entity_id: person.sara_pluth
+#         state: 'home'
+#   action:
+#   - service: lock.unlock
+#     entity_id: lock.front_door
+      
+################################################################################
+
+# - alias: '[Presence] Unlock Front Door for Anthony'
+#   trigger:
+#   - platform: state
+#     entity_id:
+#       - device_tracker.anthony_face_front_door
+#     to: home
+#   condition:
+#     condition: or
+#     conditions:
+#     - condition: state
+#       entity_id: person.anthony_pluth
+#       state: 'not_home'
+#     - condition: and
+#       conditions:
+#       - condition: template
+#         value_template: >
+#              {{ (as_timestamp(now()) - as_timestamp(states.person.anthony.last_changed)) < 15 }}
+#       - condition: state
+#         entity_id: person.anthony_pluth
+#         state: 'home'
+#   action:
+#   - service: lock.unlock
+#     entity_id: lock.front_door
+      
+################################################################################

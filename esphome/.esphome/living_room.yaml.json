@@ -1,0 +1,29 @@
+{
+  "storage_version": 1,
+  "name": "living_room_blinds",
+  "comment": null,
+  "esphome_version": "1.14.3",
+  "src_version": 1,
+  "arduino_version": "espressif8266@2.2.3",
+  "address": "192.168.40.80",
+  "esp_platform": "ESP8266",
+  "board": "nodemcuv2",
+  "build_path": "/config/esphome/living_room_blinds",
+  "firmware_bin_path": "/data/living_room_blinds/.pioenvs/living_room_blinds/firmware.bin",
+  "loaded_integrations": [
+    "api",
+    "async_tcp",
+    "captive_portal",
+    "cover",
+    "esphome",
+    "gpio",
+    "logger",
+    "network",
+    "ota",
+    "output",
+    "switch",
+    "time_based",
+    "web_server_base",
+    "wifi"
+  ]
+}

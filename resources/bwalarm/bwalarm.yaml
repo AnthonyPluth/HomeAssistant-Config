@@ -1,0 +1,136 @@
+platform: bwalarm
+panel:
+  cameras: []
+  enable_clock: 'True'
+  enable_fahrenheit: 'True'
+  hide_passcode: 'True'
+  hide_sensors: 'False'
+  hide_sidebar: 'True'
+  round_buttons: 'True'
+  enable_serif_font: 'True'
+  enable_sensors_panel: 'True'
+  enable_camera_panel: 'True'
+  panel_title: ''
+  camera_update_interval: ''
+  floorplan: sensor.anthony_s_nightstand_battery_level
+enable_night_mode: false
+states:
+  armed_away:
+    immediate:
+    - binary_sensor.motion_bar
+    - binary_sensor.motion_exercise_room
+    - binary_sensor.motion_family_room
+    - binary_sensor.motion_kitchen
+    - binary_sensor.motion_living_room
+    - binary_sensor.motion_master_bath
+    - binary_sensor.motion_master_bedroom
+    - binary_sensor.motion_office
+    - binary_sensor.motion_pantry
+    - binary_sensor.motion_play_room
+    - binary_sensor.motion_upstairs_hallway
+    - binary_sensor.motion_workshop
+    - binary_sensor.kitchen_glass
+    - binary_sensor.laundry_room_glass
+    - binary_sensor.living_room_glass
+    - binary_sensor.play_room_glass
+    - binary_sensor.office_glass
+    - binary_sensor.door_patio
+    delayed:
+    - binary_sensor.motion_main_stall
+    - binary_sensor.motion_mud_room
+    - binary_sensor.main_stall_tilt
+    - binary_sensor.door_front
+    - binary_sensor.door_mud_room
+    override: []
+    pending_time: '30'
+    warning_time: '30'
+    trigger_time: 600
+  armed_home:
+    immediate:
+    - binary_sensor.office_glass
+    - binary_sensor.play_room_glass
+    - binary_sensor.kitchen_glass
+    - binary_sensor.laundry_room_glass
+    - binary_sensor.living_room_glass
+    - binary_sensor.main_stall_tilt
+    - binary_sensor.motion_workshop
+    - binary_sensor.motion_main_stall
+    delayed:
+    - binary_sensor.door_front
+    - binary_sensor.door_mud_room
+    - binary_sensor.door_patio
+    override: []
+    pending_time: '30'
+    warning_time: '30'
+    trigger_time: 600
+  armed_night:
+    immediate:
+    - binary_sensor.kitchen_glass
+    - binary_sensor.laundry_room_glass
+    - binary_sensor.living_room_glass
+    - binary_sensor.play_room_glass
+    - binary_sensor.office_glass
+    - binary_sensor.motion_workshop
+    - binary_sensor.motion_main_stall
+    - binary_sensor.main_stall_tilt
+    delayed:
+    - binary_sensor.door_front
+    - binary_sensor.door_patio
+    - binary_sensor.door_mud_room
+    override: []
+    pending_time: 0
+    warning_time: 0
+    trigger_time: 600
+users:
+- id: 9caf87d91ad044e6b92c637c198e8c8d
+  name: Sara Pluth
+  enabled: false
+  code: 9caf87d91ad044e6b92c637c198e8c8d
+  picture: ha.png
+- id: 776e29312edf496c8c345ebe4d2e3cf8
+  name: Home Assistant Cloud
+  enabled: false
+  code: 776e29312edf496c8c345ebe4d2e3cf8
+  picture: ha.png
+- id: de539a3ffb6d4d389c8277ec6c74ec71
+  name: Hass.io
+  enabled: false
+  code: de539a3ffb6d4d389c8277ec6c74ec71
+  picture: ha.png
+- id: c04502a1723e4832a2a263c1ba3453b1
+  name: Anthony Pluth
+  enabled: false
+  code: c04502a1723e4832a2a263c1ba3453b1
+  picture: ha.png
+- id: 08ebf9c1923c42008060b855abe8333a
+  name: Home Assistant Cast
+  enabled: false
+  code: 08ebf9c1923c42008060b855abe8333a
+  picture: ha.png
+- id: 6623e14587e84ea3a6f86a10e1e579ae
+  name: mqtt
+  enabled: false
+  code: 6623e14587e84ea3a6f86a10e1e579ae
+  picture: ha.png
+- id: aaf363a4e5ab4538a7b57793b5f62a35
+  name: Home Assistant Cast
+  enabled: false
+  code: aaf363a4e5ab4538a7b57793b5f62a35
+  picture: ha.png
+- id: b2c82bb89313452391cdbdb546e1406a
+  name: Tablet_User
+  enabled: false
+  code: b2c82bb89313452391cdbdb546e1406a
+  picture: ha.png
+- id: 14430a24ef6a4f1aaebcc0f092e168b0
+  name: Tablet User
+  enabled: false
+  code: 14430a24ef6a4f1aaebcc0f092e168b0
+  picture: ha.png
+- id: d715cf059ea842c4b565ba0be7e9b231
+  name: WinkRelayLivingRoom
+  enabled: false
+  code: d715cf059ea842c4b565ba0be7e9b231
+  picture: ha.png
+admin_password: simpson
+enable_persistence: true

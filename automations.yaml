@@ -1,0 +1,2081 @@
+- id: alarm_away_mode_armed
+  alias: '[Alarm] Away Mode Armed'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: armed_away
+  action:
+  - service: switch.turn_on
+    entity_id:
+    - switch.armed_workshop_motion
+    - switch.armed_laundry_room_glass
+    - switch.armed_kitchen_glass
+    - switch.armed_play_room_glass
+    - switch.armed_office_glass
+    - switch.armed_main_stall_tilt
+    - switch.armed_basement_leak_sensor
+  - service: script.turn_on
+    entity_id: script.set_thermostat_to_away
+  - service: script.turn_on
+    entity_id: script.tablets_navigate_to_alarm_panel
+  - service: rest_command.assistant_broadcast
+    data:
+      command: system armed in away mode
+- id: alarm_home_mode_armed
+  alias: '[Alarm] Home Mode Armed'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: armed_home
+  action:
+  - service: rest_command.assistant_broadcast
+    data:
+      command: system armed in home mode.
+  - service: switch.turn_on
+    entity_id:
+    - switch.armed_workshop_motion
+    - switch.armed_laundry_room_glass
+    - switch.armed_kitchen_glass
+    - switch.armed_play_room_glass
+    - switch.armed_office_glass
+    - switch.armed_main_stall_tilt
+    - switch.armed_basement_leak_sensor
+  - service: script.turn_on
+    entity_id: script.tablets_navigate_to_alarm_panel
+- id: alarm_disarmed
+  alias: '[Alarm] Disarmed'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: disarmed
+  action:
+  - service: switch.turn_off
+    entity_id:
+    - switch.siren
+    - switch.armed_workshop_motion
+    - switch.armed_laundry_room_glass
+    - switch.armed_kitchen_glass
+    - switch.armed_play_room_glass
+    - switch.armed_office_glass
+    - switch.armed_main_stall_tilt
+  - service: script.turn_on
+    entity_id: script.set_thermostat_to_home
+  - service: script.turn_on
+    entity_id: script.tablets_navigate_to_tablet_view
+  - service: rest_command.assistant_broadcast
+    data:
+      command: system disarmed
+- id: alarm_triggered
+  alias: '[Alarm] Triggered'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: triggered
+  action:
+  - service: cast.show_lovelace_view
+    data:
+      entity_id: media_player.kitchen_display
+      view_path: alarm
+      dashboard_path: lovelace-cast
+  - service: cast.show_lovelace_view
+    data:
+      entity_id: media_player.master_bedroom_display
+      view_path: alarm
+      dashboard_path: lovelace-cast
+  - service: rest_command.master_bedroom_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: rest_command.hallway_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: switch.turn_on
+    entity_id: switch.siren
+  - service: notify.ALL_DEVICES
+    data_template:
+      title: ALARM
+      message: ALARM TRIGGERED!!! {{ states[states.alarm_control_panel.house.attributes.changed_by.split(".")[0]][
+        states.alarm_control_panel.house.attributes.changed_by.split(".")[1]].name
+        }}
+      data:
+        channel: Alarm
+        vibrationPattern: 100, 1000, 100, 1000, 100
+        actions:
+        - action: cancel_alarm
+          title: False Alarm
+        - action: alarm_full_blast
+          title: Sound Siren
+- id: alarm_warning
+  alias: '[Alarm] Warning'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: warning
+  action:
+  - service: rest_command.master_bedroom_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: rest_command.hallway_tablet_cmd
+    data:
+      cmd: screenOn
+  - service: notify.ALL_DEVICES
+    data_template:
+      title: ALARM
+      message: ALARM Warning {{ states[states.alarm_control_panel.house.attributes.changed_by.split(".")[0]][
+        states.alarm_control_panel.house.attributes.changed_by.split(".")[1]].name
+        }}
+      data:
+        channel: Alarm
+        actions:
+        - action: cancel_alarm
+          title: False Alarm
+        - action: alarm_full_blast
+          title: Sound Siren
+- id: alarm_update_theme
+  alias: '[Alarm] Update Theme'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+  action:
+  - service: frontend.set_theme
+    data_template:
+      name: night_{{ states("alarm_control_panel.house") }}
+
+- id: button_toggle_living_room_sconce
+  alias: "[Button] Toggle Living Room Sconce"
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      event: 1002
+      id: living_room_switch
+  action:
+  - service: light.toggle
+    entity_id: light.living_room_sconce
+
+- id: button_toggle_living_room_lamp
+  alias: "[Button] Toggle Living Room Lamp"
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      event: 1004
+      id: living_room_switch
+  action:
+  - service: light.toggle
+    entity_id: light.living_room_lamp
+- id: button_toggle_ollies_lights
+  alias: "[Button] Toggle Ollie's Lights"
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      event: 1002
+      id: ollies_switch
+  action:
+  - service: light.toggle
+    entity_id: light.ollies_room
+- id: button_toggle_anthonys_nightstand
+  alias: "[Button] Toggle Anthony's Nightstand"
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      event: 1002
+      id: anthonys_nightstand
+  action:
+  - service: light.toggle
+    entity_id: light.anthonys_nightstand
+- id: button_toggle_saras_nightstand
+  alias: "[Button] Toggle Sara's Nightstand"
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      event: 1002
+      id: saras_nightstand
+  action:
+  - service: light.toggle
+    entity_id: light.saras_nightstand
+- id: button_toggle_master_bedroom
+  alias: "[Button] Toggle Master Bedroom"
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      event: 1004
+      id: anthonys_nightstand
+  action:
+  - service: light.toggle
+    entity_id: light.master_bedroom
+- id: button_toggle_master_bathroom
+  alias: "[Button] Toggle Master Bathroom"
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      event: 1005
+      id: anthonys_nightstand
+  action:
+  - service: light.toggle
+    entity_id: light.master_bath
+- id: climate_keep_temp_above_72_after_1_hour
+  alias: '[Climate] Keep temp above 72 after 1 hour'
+  trigger:
+  - platform: numeric_state
+    entity_id: climate.home
+    value_template: '{{ state_attr(''climate.home'', ''temperature'')|float }}'
+    below: '72.0'
+    for: 0:60:00
+  condition:
+    condition: template
+    value_template: '{{ states.climate.home.state == ''cool''}}'
+  action:
+  - service: climate.set_temperature
+    data:
+      entity_id: climate.home
+      temperature: 72.4
+- id: climate_keep_temp_above_70
+  alias: '[Climate] Keep temp above 70'
+  trigger:
+  - platform: numeric_state
+    entity_id: climate.home
+    value_template: '{{ state_attr(''climate.home'', ''temperature'')|float }}'
+    below: '70'
+  condition:
+    condition: template
+    value_template: '{{ states.climate.home.state == ''cool''}}'
+  action:
+  - service: climate.set_temperature
+    data:
+      entity_id: climate.home
+      temperature: 72.0
+- id: climate_keep_temp_below_68
+  alias: '[Climate] Keep temp below 68'
+  trigger:
+  - platform: numeric_state
+    entity_id: climate.home
+    value_template: '{{ state_attr(''climate.home'', ''temperature'')|float }}'
+    above: '68.0'
+  condition:
+    condition: template
+    value_template: '{{ states.climate.home.state == ''heat''}}'
+  action:
+  - service: climate.set_temperature
+    data:
+      entity_id: climate.home
+      temperature: 68
+- id: '[Doors] Open Notification'
+  alias: '[Doors] Open Notification'
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.door_front
+    - binary_sensor.door_patio
+    - binary_sensor.door_mud_room
+    to: 'on'
+  action:
+  - service: rest_command.assistant_broadcast
+    data_template:
+      command: '{{ trigger.to_state.attributes.friendly_name }} open.'
+- id: '[Doors] Still Open Notification'
+  alias: '[Doors] Still Open Notification'
+  trigger:
+    platform: state
+    entity_id:
+    - binary_sensor.door_front
+    - binary_sensor.door_patio
+    - binary_sensor.door_mud_room
+    to: 'on'
+    for: 0:05:00
+  condition:
+    condition: not
+    conditions:
+    - condition: state
+      entity_id: climate.home
+      state: 'off'
+  action:
+  - service: rest_command.assistant_broadcast
+    data_template:
+      command: '{{ trigger.to_state.attributes.friendly_name }} is still open. Thermostat
+        has been turned off.'
+  - service: notify.mobile_app_sara_s_phone
+    data_template:
+      title: Door Left Open
+      message: '{{ trigger.to_state.attributes.friendly_name }} is still open. Thermostat
+        has been turned off.'
+      data:
+        color: 3f00ff
+  - service: climate.set_hvac_mode
+    data:
+      entity_id: climate.home
+      hvac_mode: 'off'
+- id: '[Doors] Deck Lights Off'
+  alias: '[Doors] Deck Lights Off'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_patio
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: sensor.patio_door_counter
+    state: '2'
+  action:
+    service: light.turn_off
+    entity_id: light.deck
+- id: '[Doors] Lights On When Garage Door Opened'
+  alias: '[Doors] Lights On When Garage Door Opened'
+  trigger:
+  - platform: state
+    entity_id: cover.main_stall
+    to: open
+  condition:
+    condition: state
+    entity_id: var.day_night
+    state: night
+  action:
+    service: light.turn_on
+    entity_id:
+    - light.garage
+    - light.front_porch
+- id: '[Doors] Lights Off When Garage Door Closed'
+  alias: '[Doors] Lights Off When Garage Door Closed'
+  trigger:
+  - platform: state
+    entity_id: cover.main_stall
+    to: closed
+  action:
+    service: light.turn_off
+    entity_id:
+    - light.garage
+- id: '[Exhaust] Basement Bath Off'
+  alias: '[Exhaust] Basement Bath Off'
+  trigger:
+    entity_id: switch.exhaust_basement_bath
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  action:
+    service: switch.turn_off
+    entity_id: switch.exhaust_basement_bath
+- id: '[Exhaust] Kid''s Bath On'
+  alias: '[Exhaust] Kid''s Bath On'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.humidity_kids_bath
+    value_template: '{{ states.sensor.humidity_kids_bath.state|float - states.sensor.home_humidity.state|float
+      }}'
+    above: 13.5
+  action:
+    service: switch.turn_on
+    entity_id: switch.exhaust_kids_bath
+- id: '[Exhaust] Kid''s Bath Off'
+  alias: '[Exhaust] Kid''s Bath Off'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.humidity_kids_bath
+    value_template: '{{ states.sensor.humidity_kids_bath.state|float - states.sensor.home_humidity.state|float
+      }}'
+    below: 13.5
+  - platform: state
+    entity_id: switch.humidity_kids_bath
+    to: 'on'
+    for: 0:15:00
+  condition:
+  - condition: state
+    entity_id: switch.exhaust_kids_bath
+    state: 'on'
+    for: 0:15:00
+  - condition: numeric_state
+    entity_id: sensor.humidity_kids_bath
+    value_template: '{{ states.sensor.humidity_kids_bath.state|float - states.sensor.home_humidity.state|float
+      }}'
+    below: 13.5
+  action:
+    service: switch.turn_off
+    entity_id: switch.exhaust_kids_bath
+- id: '[Exhaust] Master Bath On'
+  alias: '[Exhaust] Master Bath On'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.humidity_master_bath
+    value_template: '{{ states.sensor.humidity_master_bath.state|float - states.sensor.home_humidity.state|float
+      }}'
+    above: 13.5
+  action:
+    service: switch.turn_on
+    entity_id: switch.exhaust_master_bath
+- id: '[Exhaust] Master Bath Off'
+  alias: '[Exhaust] Master Bath Off'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.humidity_master_bath
+    value_template: '{{ states.sensor.humidity_master_bath.state|float - states.sensor.home_humidity.state|float
+      }}'
+    below: 13.5
+  - platform: state
+    entity_id: switch.exhaust_master_bath
+    to: 'on'
+    for: 0:15:00
+  condition:
+  - condition: state
+    entity_id: switch.exhaust_master_bath
+    state: 'on'
+    for: 0:15:00
+  - condition: numeric_state
+    entity_id: sensor.humidity_master_bath
+    value_template: '{{ states.sensor.humidity_master_bath.state|float - states.sensor.home_humidity.state|float
+      }}'
+    below: 13.5
+  action:
+    service: switch.turn_off
+    entity_id: switch.exhaust_master_bath
+- id: '[Exhaust] Powder Room Off'
+  alias: '[Exhaust] Powder Room Off'
+  trigger:
+    entity_id: switch.exhaust_powder_room
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  action:
+    service: switch.turn_off
+    entity_id: switch.exhaust_powder_room
+- id: '[Illum] Switch to night mode'
+  alias: '[Illum] Switch to night mode'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.illumination_outdoor
+    below: 350
+  action:
+  - service: var.set
+    data:
+      entity_id:
+      - var.day_night
+      value: night
+      icon: mdi:weather-night
+- id: '[Illum] Switch to day mode'
+  alias: '[Illum] Switch to day mode'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.illumination_outdoor
+    above: 350
+  action:
+  - service: var.set
+    data:
+      entity_id:
+      - var.day_night
+      value: day
+      icon: mdi:white-balance-sunny
+- id: '[Illum] Outside Lights On'
+  alias: '[Illum] Outside Lights On'
+  trigger:
+  - platform: state
+    entity_id: var.day_night
+    to: night
+  condition:
+    condition: time
+    after: 08:00:00
+    before: '23:00:00'
+  action:
+  - service: light.turn_on
+    entity_id:
+    - light.front_porch
+    - light.landscape
+- id: '[Illum][Time] Outside Lights Off'
+  alias: '[Illum][Time] Outside Lights Off'
+  trigger:
+  - platform: time
+    at: '23:30:00'
+  - platform: state
+    entity_id: var.day_night
+    to: day
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.deck
+    - light.deck_string
+    - light.front_porch
+    - light.landscape
+- id: '[Illum] Nightlights Off'
+  alias: '[Illum] Nightlights Off'
+  trigger:
+  - platform: state
+    entity_id: var.day_night
+    to: day
+  - platform: time
+    at: 06:00:00
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.ollies_nightlight
+    - light.maddies_nightlight
+    - light.maddies_string
+- id: '[Input Boolean] Guest Mode On'
+  alias: '[Input Boolean] Guest Mode On'
+  trigger:
+  - platform: state
+    entity_id: input_boolean.guest_mode
+    to: 'on'
+  action:
+  - service: notify.ALL_DEVICES
+    data:
+      title: Guest Mode On
+      message: Guest Mode is ON
+      data:
+        persistent: true
+        tag: persistent
+        sticky: true
+        actions:
+        - title: Turn off Guest Mode
+          action: guest_mode_off
+          icon: mdi:account-multiple
+- id: '[Input Boolean] Guest Mode Off'
+  alias: '[Input Boolean] Guest Mode Off'
+  trigger:
+  - platform: state
+    entity_id: input_boolean.guest_mode
+    to: 'off'
+  action:
+  - service: notify.ALL_DEVICES
+    data:
+      message: clear_notification
+      data:
+        tag: persistent
+  - service: device_tracker.see
+    data:
+      dev_id: deb_face
+      location_name: not_home
+  - service: device_tracker.see
+    data:
+      dev_id: morris_face
+      location_name: not_home
+- id: '[Maintenance] Daily Reboot'
+  alias: '[Maintenance] Daily Reboot'
+  trigger:
+  - platform: time
+    at: 03:00:00
+  action:
+  - service: homeassistant.restart
+- id: Perform Daily Backup
+  alias: "[Maintenance] Perform Daily Backup"
+  trigger:
+    platform: time
+    at: 02:30:00
+  action:
+    service: auto_backup.snapshot_full
+    data_template:
+      name: 'DailyBackup: {{ now().strftime(''%A, %B %-d, %Y'') }}'
+      keep_days: 14
+- id: System - Set Custom Theme at Startup
+  alias: "[Maintenance] Set Custom Theme at Startup"
+  initial_state: 'true'
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    service: frontend.set_theme
+    data:
+      name: night_armed_home
+- id: '[Media] Living Room TV Off When Idle'
+  alias: '[Media] Living Room TV Off When Idle'
+  trigger:
+  - entity_id: media_player.living_room_tv
+    platform: state
+    to: 'off'
+    for: 0:15:00
+  - entity_id: media_player.living_room_tv
+    platform: state
+    to: idle
+    for: 0:15:00
+  - entity_id: media_player.living_room_tv
+    platform: state
+    to: paused
+    for: 0:15:00
+  - entity_id: binary_sensor.motion_living_room
+    platform: state
+    to: 'off'
+    for: 0:30:00
+  action:
+  - service: media_player.media_stop
+    entity_id: media_player.living_room_tv
+  - service: media_player.turn_off
+    entity_id: media_player.living_room_tv
+  - service: remote.turn_off
+    entity_id: remote.43_tcl_roku_tv
+- id: '[Media] Dim Lights for Movie (Family Room)'
+  alias: '[Media] Dim Lights for Movie (Family Room)'
+  trigger:
+  - entity_id: remote.family_room
+    platform: state
+    to: 'on'
+  condition:
+    condition: or
+    conditions:
+    - condition: template
+      value_template: '{{ trigger.to_state.attributes.current_activity == "Watch Nvidia
+        Shield" }}'
+    - condition: template
+      value_template: '{{ trigger.to_state.attributes.current_activity == "Watch a
+        Movie" }}'
+  action:
+  - service: scene.turn_on
+    entity_id: scene.movie
+- id: '[Media] Restore Lights after Movie (Family Room)'
+  alias: '[Media] Restore Lights after Movie (Family Room)'
+  trigger:
+  - entity_id: remote.family_room
+    platform: state
+    to: 'off'
+  action:
+    service: light.turn_on
+    entity_id:
+    - light.family_room_out
+    - light.family_room_in
+    - light.bar
+    data:
+      transition: 30
+      brightness_pct: 50
+- id: '[Media] Exercise Room TV Off When Idle'
+  alias: '[Media] Exercise Room TV Off When Idle'
+  trigger:
+  - entity_id: light.exercise_room
+    platform: state
+    to: 'off'
+  action:
+  - service: media_player.media_stop
+    entity_id: media_player.exercise_room_tv
+- id: '[HTML5] Guest Mode On'
+  alias: '[HTML5] Guest Mode On'
+  trigger:
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: guest_mode_on
+  action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.guest_mode
+- id: '[HTML5] Guest Mode Off'
+  alias: '[HTML5] Guest Mode Off'
+  trigger:
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: guest_mode_off
+  action:
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.guest_mode
+- id: '[HTML5] Unlock Front Door'
+  alias: '[HTML5] Unlock Front Door'
+  trigger:
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: unlock_front_door
+  action:
+  - service: lock.unlock
+    entity_id: lock.front_door
+- id: '[HTML5] Open Garage Door'
+  alias: '[HTML5] Open Garage Door'
+  trigger:
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: open_main_stall
+  action:
+  - service: cover.open_cover
+    entity_id: cover.garage_door_opener
+- id: '[HTML5] Cancel Alarm'
+  alias: '[HTML5] Cancel Alarm'
+  trigger:
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: cancel_alarm
+  action:
+  - service: alarm_control_panel.alarm_disarm
+    entity_id: alarm_control_panel.house
+    data:
+      code: !secret alarm_code
+- id: '[HTML5] Alarm Full Blast'
+  alias: '[HTML5] Alarm Full Blast'
+  trigger:
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: alarm_full_blast
+  action:
+  - service: alarm_control_panel.alarm_trigger
+    entity_id: alarm_control_panel.house
+    data:
+      code: !secret alarm_code
+- id: '[Motion] Bar On'
+  alias: '[Motion] Bar On'
+  trigger:
+  - entity_id: binary_sensor.motion_bar
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: light.bar
+    state: 'off'
+  action:
+  - service: light.turn_on
+    entity_id: light.bar
+    data:
+      brightness_pct: 100
+- id: '[Motion][Doors] Deck On'
+  alias: '[Motion][Doors] Deck On'
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.door_patio
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: var.day_night
+    state: night
+  - condition: state
+    entity_id: light.deck_string
+    state: 'off'
+  action:
+    service: light.turn_on
+    entity_id: light.deck
+- id: '[Motion] Dining Room On'
+  alias: '[Motion] Dining Room On'
+  trigger:
+  - entity_id: binary_sensor.motion_kitchen
+    platform: state
+    to: 'on'
+  - entity_id: light.dining_room
+    platform: state
+    to: 'on'
+  condition:
+  - condition: time
+    after: 06:00:00
+    before: '23:30:00'
+  - condition: state
+    entity_id:
+    - light.dining_room
+    - light.kitchen
+    - light.kitchen_sink
+    state: 'off'
+  - condition: state
+    entity_id: var.day_night
+    state: night
+  action:
+    service: light.turn_on
+    entity_id: light.dining_room
+    data:
+      brightness_pct: 20
+- id: '[Motion] Exercise Room On'
+  alias: '[Motion] Exercise Room On'
+  trigger:
+  - entity_id: binary_sensor.motion_exercise_room
+    platform: state
+    to: 'on'
+  condition:
+    condition: or
+    conditions:
+    - condition: state
+      entity_id: light.family_room_out
+      state: 'on'
+    - condition: state
+      entity_id: light.family_room_in
+      state: 'on'
+  action:
+  - service: light.turn_on
+    entity_id: light.exercise_room
+- id: '[Motion] Family Room On'
+  alias: '[Motion] Family Room On'
+  trigger:
+  - entity_id: binary_sensor.motion_family_room
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id:
+    - light.family_room_out
+    - light.family_room_in
+    state: 'off'
+  action:
+  - service: light.turn_on
+    entity_id:
+    - light.family_room_out
+    - light.family_room_in
+    data:
+      brightness_pct: 100
+- id: '[Motion] Front Porch On'
+  alias: '[Motion] Front Porch On'
+  trigger:
+  - entity_id: binary_sensor.motion_front_porch
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: var.day_night
+    state: night
+  action:
+  - service: light.turn_on
+    entity_id: light.front_porch
+- id: '[Motion] Garage On'
+  alias: '[Motion] Garage On'
+  trigger:
+    entity_id: binary_sensor.motion_main_stall
+    platform: state
+    to: 'on'
+  action:
+  - service: light.turn_on
+    entity_id: light.garage
+- id: '[Motion] Workshop On'
+  alias: '[Motion] Workshop On'
+  trigger:
+    entity_id: binary_sensor.motion_workshop
+    platform: state
+    to: 'on'
+  action:
+  - service: switch.turn_on
+    entity_id:
+    - switch.workshop_left
+    - switch.workshop_right
+  - service: light.turn_on
+    entity_id: light.garage
+- id: '[Motion] Living Room On'
+  alias: '[Motion] Living Room On'
+  trigger:
+  - entity_id: binary_sensor.motion_living_room
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id:
+    - light.living_room_lights
+    - light.living_room_outlets
+    - light.living_room_lamp
+    - light.living_room_sconce
+    state: 'off'
+  - condition: time
+    after: 06:00:00
+    before: '23:30:00'
+  - condition: state
+    entity_id: var.day_night
+    state: night
+  action:
+  - service: light.turn_on
+    entity_id: light.living_room_lights
+- id: '[Motion] Mud Room On'
+  alias: '[Motion] Mud Room On'
+  trigger:
+  - entity_id: binary_sensor.motion_mud_room
+    platform: state
+    to: 'on'
+  action:
+  - service: light.turn_on
+    entity_id: light.mud_room
+- id: '[Motion] Pantry On'
+  alias: '[Motion] Pantry On'
+  trigger:
+  - entity_id: binary_sensor.motion_pantry
+    platform: state
+    to: 'on'
+  action:
+  - service: light.turn_on
+    entity_id: light.pantry
+- id: '[Motion] Play Room On'
+  alias: '[Motion] Play Room On'
+  trigger:
+  - entity_id: binary_sensor.motion_play_room
+    platform: state
+    to: 'on'
+  condition:
+  - condition: time
+    after: 06:00:00
+    before: '23:30:00'
+  - condition: state
+    entity_id: var.day_night
+    state: night
+  action:
+  - service: light.turn_on
+    entity_id: light.play_room
+- id: '[Presence] Arrive at Home'
+  alias: '[Presence] Arrive at Home'
+  trigger:
+  - platform: state
+    entity_id: group.presence
+    to: home
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: var.day_night
+        state: day
+      sequence:
+      - service: alarm_control_panel.alarm_disarm
+        entity_id: alarm_control_panel.house
+        data:
+          code: !secret alarm_code
+      - service: lock.unlock
+        entity_id: lock.mud_room_door
+      - service: light.turn_on
+        entity_id: light.mud_room
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.guest_mode
+      - service: climate.set_preset_mode
+        data:
+          entity_id: climate.my_ecobee
+          preset_mode: home
+    - conditions:
+      - condition: state
+        entity_id: var.day_night
+        state: day
+      sequence:
+      - service: alarm_control_panel.alarm_disarm
+        entity_id: alarm_control_panel.house
+        data:
+          code: !secret alarm_code
+      - service: lock.unlock
+        entity_id: lock.mud_room_door
+      - service: light.turn_on
+        entity_id:
+        - light.mud_room
+        - light.garage
+        - light.front_porch
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.guest_mode
+      - service: climate.set_preset_mode
+        data:
+          entity_id: climate.my_ecobee
+          preset_mode: home
+- id: '[Presence] Depart Some'
+  alias: '[Presence] Depart Some'
+  trigger:
+  - platform: state
+    entity_id:
+    - person.anthony_pluth
+    - person.sara_pluth
+    from: home
+  condition:
+    condition: state
+    entity_id: group.presence
+    state: home
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.mud_room
+    - light.garage
+- id: '[Presence] Depart All'
+  alias: '[Presence] Depart All'
+  trigger:
+  - platform: state
+    entity_id: group.presence
+    from: home
+  condition:
+    condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  action:
+  - service: scene.turn_on
+    entity_id: scene.away_mode
+  - service: alarm_control_panel.alarm_arm_away
+    entity_id: alarm_control_panel.house
+  - service: notify.google_assistant_command
+    data_template:
+      message: turn off Living Room TV
+  - service: notify.google_assistant_command
+    data_template:
+      message: turn off Family Room TV
+  - service: climate.set_preset_mode
+    data:
+      entity_id: climate.my_ecobee
+      preset_mode: away
+- id: '[Presence] Send Home Notification to Anthony'
+  alias: '[Presence] Send Home Notification to Anthony'
+  trigger:
+  - platform: state
+    entity_id: person.anthony_pluth
+    to: home
+  action:
+  - service: notify.mobile_app_anthony_s_phone
+    data:
+      message: clear_notification
+      data:
+        tag: Departed
+  - service: notify.mobile_app_anthony_s_phone
+    data:
+      title: Just arrived?
+      message: It looks like you just got home. Do you want to open a door?
+      data:
+        tag: Arrived
+        actions:
+        - action: unlock_front_door
+          icon: mdi:lock
+          title: Unlock Front Door
+        - action: open_main_stall
+          icon: mdi:garage
+          title: Open Garage Door
+- id: '[Presence] Send Away Notification to Anthony'
+  alias: '[Presence] Send Away Notification to Anthony'
+  trigger:
+  - platform: state
+    entity_id: person.anthony_pluth
+    from: home
+  action:
+  - service: notify.mobile_app_anthony_s_phone
+    data:
+      message: clear_notification
+      data:
+        tag: Arrived
+  - service: notify.mobile_app_anthony_s_phone
+    data:
+      title: Just left?
+      message: It looks like you just left...
+      data:
+        tag: Departed
+        actions:
+        - title: Turn on Guest Mode
+          action: guest_mode_on
+          icon: mdi:account-multiple
+- id: '[Presence] Send Home Notification to Sara'
+  alias: '[Presence] Send Home Notification to Sara'
+  trigger:
+  - platform: state
+    entity_id: person.sara_pluth
+    to: home
+  action:
+  - service: notify.mobile_app_sara_s_phone
+    data:
+      message: clear_notification
+      data:
+        tag: Departed
+  - service: notify.mobile_app_sara_s_phone
+    data:
+      title: Just arrived?
+      message: It looks like you just got home. Do you want to open a door?
+      data:
+        tag: Arrived
+        actions:
+        - action: unlock_front_door
+          icon: mdi:lock
+          title: Unlock Front Door
+        - action: open_main_stall
+          icon: mdi:garage
+          title: Open Garage Door
+- id: '[Presence] Send Away Notification to sara'
+  alias: '[Presence] Send Away Notification to sara'
+  trigger:
+  - platform: state
+    entity_id: person.sara_pluth
+    from: home
+  action:
+  - service: notify.mobile_app_sara_s_phone
+    data:
+      message: clear_notification
+      data:
+        tag: Arrived
+  - service: notify.mobile_app_sara_s_phone
+    data:
+      title: Just left?
+      message: It looks like you just left...
+      data:
+        tag: Departed
+        actions:
+        - title: Turn on Guest Mode
+          action: guest_mode_on
+          icon: mdi:account-multiple
+- id: '[Presence] Turn Guest Mode On'
+  alias: '[Presence] Turn Guest Mode On'
+  trigger:
+  - platform: state
+    entity_id:
+    - person.deb
+    - person.morris
+    to: home
+  action:
+  - service: input_boolean.turn_on
+    entity_id: input_boolean.guest_mode
+  - service: alarm_control_panel.alarm_disarm
+    entity_id: alarm_control_panel.house
+    data:
+      code: !secret alarm_code
+- id: '[Presence] Set kids to away'
+  alias: '[Presence] Set kids to away'
+  trigger:
+  - platform: state
+    entity_id: group.adults
+    from: home
+  action:
+  - service: device_tracker.see
+    data:
+      dev_id: maddie_face
+      location_name: not_home
+  - service: device_tracker.see
+    data:
+      dev_id: ollie_face
+      location_name: not_home
+- id: '[Presence] Set anthony_face to away'
+  alias: '[Presence] Set anthony_face to away'
+  trigger:
+  - platform: state
+    entity_id:
+    - device_tracker.anthony_ping
+    - device_tracker.google_maps_106375375891041354046
+    from: home
+  action:
+  - service: device_tracker.see
+    data:
+      dev_id: anthony_face
+      location_name: not_home
+- id: '[Presence] Set sara_face to away'
+  alias: '[Presence] Set sara_face to away'
+  trigger:
+  - platform: state
+    entity_id:
+    - device_tracker.sara_ping
+    - device_tracker.google_maps_117752593884602151377
+    from: home
+  action:
+  - service: device_tracker.see
+    data:
+      dev_id: sara_face
+      location_name: not_home
+- id: '[Presence] Set guest faces to away'
+  alias: '[Presence] Set guest faces to away'
+  trigger:
+  - platform: state
+    entity_id: input_boolean.guest_mode
+    to: 'off'
+  - platform: state
+    entity_id: person.sara_pluth
+    to: home
+  - platform: state
+    entity_id: person.anthony_pluth
+    to: home
+  action:
+  - service: device_tracker.see
+    data:
+      dev_id: deb_face
+      location_name: not_home
+  - service: device_tracker.see
+    data:
+      dev_id: morris_face
+      location_name: not_home
+- id: '[Presence] Set BT Device Tracker to Home'
+  alias: '[Presence] Set BT Device Tracker to Home'
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.anthonys_work_keys_room_presence
+    - sensor.anthonys_extra_keys_room_presence
+    - sensor.saras_keys_room_presence
+    - sensor.saras_extra_keys_room_presence
+    - sensor.extra_minew_room_presence
+    - sensor.maddies_watch_room_presence
+    from: not_home
+  action:
+  - service: device_tracker.see
+    data_template:
+      dev_id: '{{ trigger.to_state.object_id }}'
+      location_name: '{% if is_state(trigger.entity_id, ''not_home'') %}not_home{%
+        else %}home{% endif %}'
+- id: '[Presence] Set BT Device Tracker to Away'
+  alias: '[Presence] Set BT Device Tracker to Away'
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.anthonys_work_keys_room_presence
+    - sensor.anthonys_extra_keys_room_presence
+    - sensor.saras_keys_room_presence
+    - sensor.saras_extra_keys_room_presence
+    - sensor.extra_minew_room_presence
+    - sensor.maddies_watch_room_presence
+    to: not_home
+  action:
+  - service: device_tracker.see
+    data_template:
+      dev_id: '{{ trigger.to_state.object_id }}'
+      location_name: '{% if is_state(trigger.entity_id, ''not_home'') %}not_home{%
+        else %}home{% endif %}'
+- id: '[Time] Pond Pump On'
+  alias: '[Time] Pond Pump On'
+  trigger:
+  - platform: time
+    at: 08:00:00
+  condition:
+  - condition: template
+    value_template: '{{ now().month <= 10 }}'
+  - condition: template
+    value_template: '{{ now().month >= 4 }}'
+  action:
+    service: switch.turn_on
+    entity_id: switch.pond_pump
+- id: '[Time] Pond Pump Off'
+  alias: '[Time] Pond Pump Off'
+  trigger:
+  - platform: time
+    at: '20:00:00'
+  condition:
+  - condition: template
+    value_template: '{{ now().month <= 10 }}'
+  - condition: template
+    value_template: '{{ now().month >= 4 }}'
+  action:
+    service: switch.turn_off
+    entity_id: switch.pond_pump
+- id: '[Winter] Living Room Tree On'
+  alias: '[Winter] Living Room Tree On'
+  trigger:
+  - entity_id: light.living_room_lights
+    platform: state
+    to: 'on'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: light.turn_on
+    entity_id: light.living_room_lamp
+- alias: '[Winter] Living Room Tree Off'
+  trigger:
+  - entity_id: light.living_room_lights
+    platform: state
+    to: 'off'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: light.turn_off
+    entity_id: light.living_room_lamp
+  id: 4d4b8663bf8240ea8a74a77cd73e4716
+- id: '[Winter] Play Room Tree On'
+  alias: '[Winter] Play Room Tree On'
+  trigger:
+  - entity_id: light.play_room
+    platform: state
+    to: 'on'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: light.turn_on
+    entity_id: light.play_room_tree
+- id: '[Winter] Play Room Tree Off'
+  alias: '[Winter] Play Room Tree Off'
+  trigger:
+  - entity_id: light.play_room
+    platform: state
+    to: 'off'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: light.turn_off
+    entity_id: light.play_room_tree
+- id: '[Winter] Family Room Tree On'
+  alias: '[Winter] Family Room Tree On'
+  trigger:
+  - entity_id: light.family_room_in
+    platform: state
+    to: 'on'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: switch.turn_on
+    entity_id: switch.basement_tree
+- id: '[Winter] Family Room Tree Off'
+  alias: '[Winter] Family Room Tree Off'
+  trigger:
+  - entity_id: light.family_room_in
+    platform: state
+    to: 'off'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: switch.turn_off
+    entity_id: switch.basement_tree
+- id: '[Winter] Outdoor Holiday Lights On'
+  alias: '[Winter] Outdoor Holiday Lights On'
+  trigger:
+  - entity_id: light.landscape
+    platform: state
+    to: 'on'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: light.turn_on
+    entity_id: light.seasonal
+- id: '[Winter] Outdoor Holiday Lights Off'
+  alias: '[Winter] Outdoor Holiday Lights Off'
+  trigger:
+  - entity_id: light.landscape
+    platform: state
+    to: 'off'
+  action:
+  - service: light.turn_off
+    entity_id: light.seasonal
+- id: '[Winter] Maddie Tree On'
+  alias: '[Winter] Maddie Tree On'
+  trigger:
+  - entity_id: light.maddies_nightlight
+    platform: state
+    to: 'on'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: switch.turn_on
+    entity_id: switch.maddies_tree
+- id: '[Winter] Maddies Tree Off'
+  alias: '[Winter] Maddies Tree Off'
+  trigger:
+  - entity_id: switch.maddies_tree
+    platform: state
+    to: 'on'
+    for: 0:30:00
+  action:
+  - service: switch.turn_off
+    entity_id: switch.maddies_tree
+- id: '[Winter] Ollies Tree On'
+  alias: '[Winter] Ollies Tree On'
+  trigger:
+  - entity_id: light.ollies_nightlight
+    platform: state
+    to: 'on'
+  condition:
+    condition: template
+    value_template: '{{ now().month >= 11 }}'
+  action:
+  - service: switch.turn_on
+    entity_id: switch.ollies_tree
+- id: '[Winter] Ollies Tree Off'
+  alias: '[Winter] Ollies Tree Off'
+  trigger:
+  - entity_id: switch.ollies_tree
+    platform: state
+    to: 'on'
+    for: 0:30:00
+  action:
+  - service: switch.turn_off
+    entity_id: switch.ollies_tree
+- id: '[Switch] Outside Lights (Bright)'
+  alias: '[Switch] Outside Lights (Bright)'
+  trigger:
+  - entity_id:
+    - light.front_porch
+    - light.landscape
+    - light.deck
+    - light.deck_string
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: var.day_night
+    state: day
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.deck
+    - light.deck_string
+    - light.front_porch
+    - light.landscape
+- id: '[Time_] Nightlights On'
+  alias: '[Time_] Nightlights On'
+  trigger:
+  - platform: time
+    at: '18:30:00'
+  condition:
+    condition: or
+    conditions:
+    - condition: state
+      entity_id: group.presence
+      state: home
+    - condition: state
+      entity_id: input_boolean.guest_mode
+      state: 'on'
+  action:
+  - service: light.turn_on
+    entity_id:
+    - light.ollies_nightlight
+    - light.maddies_nightlight
+- id: '[Time_] Nightlights Off'
+  alias: '[Time_] Nightlights Off'
+  trigger:
+  - platform: time
+    at: 06:00:00
+  - platform: time
+    at: '16:00:00'
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.maddies_string
+    - light.ollies_nightlight
+    - light.maddies_nightlight
+- id: '[Time_] Bedtime Scene'
+  alias: '[Time_] Bedtime Scene'
+  trigger:
+  - platform: time
+    at: '22:30:00'
+  condition:
+    condition: or
+    conditions:
+    - condition: state
+      entity_id: group.presence
+      state: home
+    - condition: state
+      entity_id: input_boolean.guest_mode
+      state: 'on'
+  action:
+  - service: scene.turn_on
+    entity_id: scene.Bedtime
+  - service: alarm_control_panel.alarm_arm_home
+    entity_id: alarm_control_panel.house
+    data:
+      code: !secret alarm_code
+- id: '[Time_] Lights Out at 11:45 PM'
+  alias: '[Time_] Lights Out at 11:45 PM'
+  trigger:
+  - platform: time
+    at: '23:45:00'
+  action:
+  - service: scene.turn_on
+    entity_id: scene.Bedtime
+- id: '[Time_] Master Bedroom Off'
+  alias: '[Time_] Master Bedroom Off'
+  trigger:
+  - platform: time
+    at: 07:30:01
+  action:
+  - service: light.turn_off
+    entity_id: light.master_bedroom
+- id: '[Time_] Close Blinds'
+  alias: '[Time_] Close Blinds'
+  trigger:
+  - platform: time
+    at: '19:30:00'
+  action:
+  - service: cover.close_cover
+    entity_id:
+    - cover.living_room_left
+    - cover.living_room_right
+- id: '[Time_] Open Blinds'
+  alias: '[Time_] Open Blinds'
+  trigger:
+  - platform: time
+    at: 07:00:00
+  action:
+  - service: cover.open_cover
+    entity_id:
+    - cover.living_room_left
+    - cover.living_room_right
+- id: '[Time_] Turn Off Alarm'
+  alias: '[Time_] Turn Off Alarm'
+  trigger:
+  - platform: time
+    at: 06:30:00
+  condition:
+  - condition: state
+    entity_id: group.adults
+    state: home
+  action:
+  - service: alarm_control_panel.alarm_disarm
+    entity_id: alarm_control_panel.house
+    data:
+      code: !secret alarm_code
+- id: '[Timer: 5] Bar Off'
+  alias: '[Timer: 5] Bar Off'
+  trigger:
+  - entity_id: light.bar
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  - entity_id: binary_sensor.motion_bar
+    platform: state
+    to: 'off'
+    for: 0:05:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_bar
+    state: 'off'
+    for: 0:05:00
+  action:
+  - service: light.turn_off
+    entity_id: light.bar
+- id: '[Timer: 10] Basement Bath Off'
+  alias: '[Timer: 10] Basement Bath Off'
+  trigger:
+  - entity_id: light.basement_bath
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  action:
+  - service: light.turn_off
+    entity_id: light.basement_bath
+- id: '[Timer: 15] Basement Closet Off'
+  alias: '[Timer: 15] Basement Closet Off'
+  trigger:
+  - entity_id: light.basement_closet
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  action:
+  - service: light.turn_off
+    entity_id: light.basement_closet
+- id: '[Timer: 15] Basement Hallway Off'
+  alias: '[Timer: 15] Basement Hallway Off'
+  trigger:
+  - entity_id: light.basement_hallway
+    for: 0:15:00
+    platform: state
+    to: 'on'
+  action:
+  - entity_id: light.basement_hallway
+    service: light.turn_off
+  mode: single
+- id: '[Timer: 5] Basement Stairs Off'
+  alias: '[Timer: 5] Basement Stairs Off'
+  trigger:
+  - platform: state
+    entity_id: light.basement_stairs
+    to: 'on'
+    for: 0:05:00
+  action:
+  - service: light.turn_off
+    entity_id: light.basement_stairs
+- id: '[Timer: 10] Deck Lights (Dark)'
+  alias: '[Timer: 10] Deck Lights (Dark)'
+  trigger:
+  - platform: state
+    entity_id:
+    - light.deck
+    - light.deck_string
+    to: 'on'
+    for: 0:10:00
+  - platform: state
+    entity_id: binary_sensor.motion_deck
+    to: 'off'
+    for: 0:10:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_deck
+    state: 'off'
+    for: 0:10:00
+  - condition: state
+    entity_id: var.day_night
+    state: night
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.deck
+    - light.deck_string
+- id: '[Timer: 5] Exercise Room Off'
+  alias: '[Timer: 5] Exercise Room Off'
+  trigger:
+  - entity_id: light.exercise_room
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  - entity_id: binary_sensor.motion_exercise_room
+    platform: state
+    to: 'off'
+    for: 0:05:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_exercise_room
+    state: 'off'
+    for: 0:05:00
+  action:
+  - service: light.turn_off
+    entity_id: light.exercise_room
+  - service: media_player.turn_off
+    entity_id: media_player.exercise_room_tv
+- id: '[Timer: 5] Family Room Off'
+  alias: '[Timer: 5] Family Room Off'
+  trigger:
+  - entity_id:
+    - light.family_room_in
+    - light.family_room_out
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  - entity_id: binary_sensor.motion_family_room
+    platform: state
+    to: 'off'
+    for: 0:05:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_family_room
+    state: 'off'
+    for: 0:05:00
+  - condition: state
+    entity_id: remote.family_room
+    state: 'off'
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.family_room_in
+    - light.family_room_out
+- id: '[Timer: 5] Foyer Off (Bright)'
+  alias: '[Timer: 5] Foyer Off (Bright)'
+  trigger:
+  - entity_id: light.foyer
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  condition:
+  - condition: state
+    entity_id: var.day_night
+    state: day
+  action:
+  - service: light.turn_off
+    entity_id: light.foyer
+- id: '[Timer: 15] Foyer (Dark)'
+  alias: '[Timer: 15] Foyer (Dark)'
+  trigger:
+  - entity_id: light.foyer
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  - platform: state
+    entity_id: binary_sensor.motion_play_room
+    to: 'off'
+    for: 0:15:00
+  condition:
+  - condition: state
+    entity_id: var.day_night
+    state: night
+  - condition: state
+    entity_id: binary_sensor.motion_play_room
+    state: 'off'
+    for: 0:05:00
+  action:
+  - service: light.turn_off
+    entity_id: light.foyer
+- id: '[Timer: 10] Front Porch Off'
+  alias: '[Timer: 10] Front Porch Off'
+  trigger:
+  - entity_id: light.front_porch
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  - entity_id: binary_sensor.motion_front_porch
+    platform: state
+    to: 'off'
+    for: 0:10:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_front_porch
+    state: 'off'
+    for: 0:10:00
+  - condition: time
+    after: '22:30:00'
+    before: 08:00:00
+  action:
+  - service: light.turn_off
+    entity_id: light.front_porch
+- id: '[Timer: 5] Garage Off'
+  alias: '[Timer: 5] Garage Off'
+  trigger:
+  - entity_id:
+    - light.garage
+    - switch.workshop_left
+    - switch.workshop_right
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  - entity_id:
+    - binary_sensor.motion_workshop
+    - binary_sensor.motion_main_stall
+    platform: state
+    to: 'off'
+    for: 0:05:00
+  condition:
+  - condition: state
+    entity_id:
+    - binary_sensor.motion_workshop
+    - binary_sensor.motion_main_stall
+    state: 'off'
+    for: 0:05:00
+  action:
+  - service: light.turn_off
+    entity_id: light.garage
+  - service: switch.turn_off
+    entity_id:
+    - switch.workshop_left
+    - switch.workshop_right
+- id: '[Timer: 10] Laundry Room'
+  alias: '[Timer: 10] Laundry Room'
+  trigger:
+  - entity_id: light.laundry_room
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  action:
+  - service: light.turn_off
+    entity_id: light.laundry_room
+- id: '[Timer: 15] Kids Bath'
+  alias: '[Timer: 15] Kids Bath'
+  trigger:
+  - entity_id: light.kids_bath
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  action:
+  - service: light.turn_off
+    entity_id: light.kids_bath
+- id: '[Timer: 15] Living Room Off'
+  alias: '[Timer: 15] Living Room Off'
+  trigger:
+  - entity_id:
+    - light.living_room_lights
+    - light.living_room_outlets
+    - light.living_room_lamp
+    - light.living_room_sconce
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  - entity_id: binary_sensor.motion_living_room
+    platform: state
+    to: 'off'
+    for: 0:15:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_living_room
+    state: 'off'
+    for: 0:15:00
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.living_room_lights
+    - light.living_room_lamp
+    - light.living_room_sconce
+    - light.living_room_outlets
+- id: '[Timer: 10] Kitchen Off'
+  alias: '[Timer: 10] Kitchen Off'
+  trigger:
+  - entity_id:
+    - light.kitchen
+    - light.kitchen_sink
+    - light.dining_room
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  - entity_id:
+    - binary_sensor.motion_kitchen
+    - binary_sensor.motion_pantry
+    platform: state
+    to: 'off'
+    for: 0:10:00
+  condition:
+  - condition: state
+    entity_id:
+    - binary_sensor.motion_kitchen
+    - binary_sensor.motion_pantry
+    state: 'off'
+    for: 0:10:00
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.kitchen
+    - light.kitchen_sink
+    - light.dining_room
+- id: '[Timer: 10] Maddies Room'
+  alias: '[Timer: 10] Maddies Room'
+  trigger:
+  - entity_id: light.maddies_room
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  action:
+  - service: light.turn_off
+    entity_id: light.maddies_room
+- id: '[Timer: 5] Maddie String Lights Off (Day)'
+  alias: '[Timer: 5] Maddie String Lights Off (Day)'
+  trigger:
+  - entity_id: light.maddies_string
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  condition:
+  - condition: time
+    after: 06:00:00
+    before: '18:00:00'
+  action:
+  - service: light.turn_off
+    entity_id: light.maddies_string
+- id: '[Timer: 15] Maddie String Lights Off (Night)'
+  alias: '[Timer: 15] Maddie String Lights Off (Night)'
+  trigger:
+  - entity_id: light.maddies_string
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  condition:
+  - condition: time
+    before: 06:00:00
+    after: '18:00:00'
+  action:
+  - service: light.turn_off
+    entity_id: light.maddies_string
+- id: '[Timer: 15] Master Bath'
+  alias: '[Timer: 15] Master Bath'
+  trigger:
+  - entity_id: light.master_bath
+    platform: state
+    to: 'on'
+    for: 0:15:00
+  - entity_id: binary_sensor.motion_master_bath
+    platform: state
+    to: 'off'
+    for: 0:15:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_master_bath
+    state: 'off'
+    for: 0:15:00
+  action:
+  - service: light.turn_off
+    entity_id: light.master_bath
+- id: '[Timer: 30] Master Bedroom Nightstands Off'
+  alias: '[Timer: 30] Master Bedroom Nightstands Off'
+  trigger:
+  - entity_id:
+    - light.anthonys_nightstand
+    - light.saras_nightstand
+    platform: state
+    to: 'on'
+    for: 0:30:00
+  - entity_id: binary_sensor.motion_master_bedroom
+    platform: state
+    to: 'off'
+    for: 0:30:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_master_bedroom
+    state: 'off'
+    for: 0:30:00
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.anthonys_nightstand
+    - light.saras_nightstand
+- id: '[Timer: 10] Master Bedroom Off'
+  alias: '[Timer: 10] Master Bedroom Off'
+  trigger:
+  - entity_id: light.master_bedroom
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  - entity_id: binary_sensor.motion_master_bedroom
+    platform: state
+    to: 'off'
+    for: 0:10:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_master_bedroom
+    state: 'off'
+    for: 0:10:00
+  - condition: time
+    after: 07:30:00
+    before: '22:00:00'
+  action:
+  - service: light.turn_off
+    entity_id: light.master_bedroom
+- id: '[Timer: 10] Mechanical Room'
+  alias: '[Timer: 10] Mechanical Room'
+  trigger:
+  - entity_id: light.mechanical_room
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  action:
+    entity_id: light.mechanical_room
+    service: light.turn_off
+- id: '[Timer: 3] Mud Room Off'
+  alias: '[Timer: 3] Mud Room Off'
+  trigger:
+  - entity_id: light.mud_room
+    platform: state
+    to: 'on'
+    for: 0:03:00
+  - entity_id: binary_sensor.motion_mud_room
+    platform: state
+    to: 'off'
+    for: 0:03:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_mud_room
+    state: 'off'
+    for: 0:03:00
+  action:
+  - service: light.turn_off
+    entity_id: light.mud_room
+- id: '[Timer: 3] Mud Room Closet Off'
+  alias: '[Timer: 3] Mud Room Closet Off'
+  trigger:
+    platform: state
+    entity_id: light.mud_room_closet
+    to: 'on'
+    for: 0:03:00
+  action:
+  - service: light.turn_off
+    entity_id: light.mud_room_closet
+- id: '[Timer: 5] Office Off'
+  alias: '[Timer: 5] Office Off'
+  trigger:
+  - entity_id: light.office
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  - entity_id: binary_sensor.motion_office
+    platform: state
+    to: 'off'
+    for: 0:05:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_office
+    state: 'off'
+    for: 0:05:00
+  - condition: state
+    entity_id: light.office_closet
+    state: 'off'
+  action:
+  - service: light.turn_off
+    entity_id: light.office
+- id: '[Timer: 5] Office Closet Off'
+  alias: '[Timer: 5] Office Closet Off'
+  trigger:
+  - entity_id: light.office_closet
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  action:
+  - service: light.turn_off
+    entity_id: light.office_closet
+- id: '[Timer: 5] Ollie Nightlight Off (Day)'
+  alias: '[Timer: 5] Ollie Nightlight Off (Day)'
+  trigger:
+  - entity_id: light.ollies_nightlight
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  condition:
+  - condition: time
+    after: '16:00:00'
+    before: '18:00:00'
+  action:
+  - service: light.turn_off
+    entity_id: light.ollies_nightlight
+- id: '[Timer: 10] Ollies Room Off'
+  alias: '[Timer: 10] Ollies Room Off'
+  trigger:
+  - entity_id: light.ollies_room
+    for: 0:10:00
+    platform: state
+    to: 'on'
+  action:
+  - entity_id: light.ollies_room
+    service: light.turn_off
+  mode: single
+- id: '[Timer: 1] Pantry'
+  alias: '[Timer: 1] Pantry'
+  trigger:
+  - entity_id: light.pantry
+    platform: state
+    to: 'on'
+    for: 0:01:00
+  - entity_id: binary_sensor.motion_pantry
+    platform: state
+    to: 'off'
+    for: 0:01:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_pantry
+    state: 'off'
+    for: 0:01:00
+  action:
+  - service: light.turn_off
+    entity_id: light.pantry
+- id: '[Timer: 5] Play Room Off'
+  alias: '[Timer: 5] Play Room Off'
+  trigger:
+  - entity_id: light.play_room
+    platform: state
+    to: 'on'
+    for: 0:05:00
+  - entity_id: binary_sensor.motion_play_room
+    platform: state
+    to: 'off'
+    for: 0:05:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_play_room
+    state: 'off'
+    for: 0:05:00
+  action:
+  - service: light.turn_off
+    entity_id:
+    - light.play_room
+    - light.play_room_tree
+- id: '[Timer: 10] Powder Room'
+  alias: '[Timer: 10] Powder Room'
+  trigger:
+  - entity_id: light.powder_room
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  action:
+  - service: light.turn_off
+    entity_id: light.powder_room
+- id: '[Timer: 10] Server Room'
+  alias: '[Timer: 10] Server Room'
+  trigger:
+  - entity_id:
+    - light.server_room
+    - light.server_room_storage
+    for: 0:10:00
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.motion_bar
+    for: 0:05:00
+    platform: state
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_bar
+    for: 0:05:00
+    state: 'off'
+  action:
+  - entity_id:
+    - light.server_room
+    - light.server_room_storage
+    service: light.turn_off
+  mode: single
+- id: '[Timer: 10] Upstairs Hallway Off'
+  alias: '[Timer: 10] Upstairs Hallway Off'
+  trigger:
+  - entity_id: light.upstairs_hallway
+    platform: state
+    to: 'on'
+    for: 0:10:00
+  - entity_id: binary_sensor.motion_upstairs_hallway
+    platform: state
+    to: 'off'
+    for: 0:10:00
+  condition:
+  - condition: state
+    entity_id: binary_sensor.motion_upstairs_hallway
+    state: 'off'
+    for: 0:10:00
+  action:
+  - service: light.turn_off
+    entity_id: light.upstairs_hallway
+- id: '[Water] Leak Detected'
+  alias: '[Water] Leak Detected'
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.leak_mechanical_room
+    to: 'on'
+  action:
+  - service: notify.android
+    data_template:
+      message: WATER LEAK DETECTED!!! Leak detected by {{ trigger.entity_id }}
+    data:
+      title: WATER LEAK

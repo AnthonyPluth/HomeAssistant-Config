@@ -1,0 +1,15 @@
+{
+  "domain": "noonlight",
+  "name": "Noonlight",
+  "documentation": "https://github.com/konnected-io/noonlight-hass",
+  "requirements": [
+    "noonlight==0.1.1"
+  ],
+  "dependencies": [
+    "http"
+  ],
+  "codeowners": [
+    "@heythisisnate",
+	"@snicker"
+  ]
+}

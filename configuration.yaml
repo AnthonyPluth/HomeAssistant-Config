@@ -1,0 +1,219 @@
+default_config:
+
+################################################################################
+# Core components
+################################################################################
+
+alarm_control_panel: !include resources/bwalarm/bwalarm.yaml
+automation: !include automations.yaml
+discovery:
+frontend:
+  themes: !include_dir_merge_named themes
+google_assistant: !include assistant.yaml
+group: !include groups.yaml
+homeassistant:
+  customize: !include customize.yaml
+  customize_glob: !include customize_glob.yaml
+logbook:
+  exclude:
+    domains:
+      - updater
+      - media_player
+      - automation
+logger:
+#   default: debug
+recorder:
+  purge_keep_days: 1
+scene: !include scenes.yaml
+script: !include scripts.yaml
+vera:
+  vera_controller_url: !secret url_vera
+  lights: [13,14,15,19,20,21,22,23,24,25,26,27,31,32,38,39,41,42,43,45,47,48,50,51,52,54,55,56,58,61,62,63,64,69,70,71,75,77,80,94,112,144,147,148]
+websocket_api:
+zeroconf:
+
+################################################################################
+# Plugins
+################################################################################
+
+auto_backup:
+  auto_purge: true
+unifiprotect:
+  host: !secret ip_unifi
+  username: !secret user_email
+  password: !secret pw_unifi
+  
+################################################################################
+# 3rd Party APIs
+################################################################################
+
+light:
+  - platform: mqtt
+    name: "Living Room Lights"
+    state_topic: "LivingRoomRelay/relays/0/state"
+    command_topic: "LivingRoomRelay/relays/0"
+  - platform: mqtt
+    name: "Living Room Outlets"
+    state_topic: "LivingRoomRelay/relays/1/state"
+    command_topic: "LivingRoomRelay/relays/1"
+    
+#   - platform: c_by_ge
+#     name: !secret user_email
+#     password: !secret pw_cbyge
+
+tplink:
+  discovery: false
+  switch:
+    - host: !secret ip_tplink_1
+    - host: !secret ip_tplink_2
+    - host: !secret ip_tplink_3
+    - host: !secret ip_tplink_4
+    # - host: !secret ip_tplink_5
+
+var:
+  day_night:
+    friendly_name: 'Day/Night Status'
+    initial_value: 'day'
+    icon: mdi:theme-light-dark
+
+################################################################################
+# Notifications
+################################################################################
+notify:
+- name: Google Assistant
+  platform: rest
+  resource: !secret url_GA
+- name: Google Assistant Command
+  platform: rest
+  resource: !secret url_GAC
+- name: ALL_DEVICES
+  platform: group
+  services:
+    - service: mobile_app_anthony_s_phone
+    - service: mobile_app_sara_s_phone
+
+rest_command:
+  assistant_broadcast:
+    url: !secret url_google_assistant
+    method: POST
+    content_type: 'application/json'
+    payload: '{"command":"{{ command }}", "user":"Home Assistant", "broadcast":true}'
+  assistant_converse:
+    url: !secret url_google_assistant
+    method: POST
+    content_type: 'application/json'
+    payload: '{"command":"{{ command }}", "user":"Home Assistant", "converse":true}'
+  assistant_relay:
+    url: !secret url_google_assistanta
+    method: POST
+    content_type: 'application/json'
+    payload: '{"command":"{{ command }}", "user":"Home Assistant"}'
+  living_room_ptz_forward:
+    url: !secret url_living_room_forward
+    method: GET
+    content_type: 'application/json'
+  living_room_ptz_back:
+    url: !secret url_living_room_back
+    method: GET
+    content_type: 'application/json'
+  living_room_restart:
+    url: !secret url_living_room_restart
+    method: GET
+    content_type: 'application/json'
+    
+  master_bedroom_tablet_cmd:
+    url: !secret url_master_bedroom_kiosk
+  hallway_tablet_cmd:
+    url: !secret url_hallway_kiosk
+
+################################################################################
+# Sensors
+################################################################################
+sensor:
+  - platform: mqtt
+    state_topic: "LivingRoomRelay/sensors/temperature"
+    name: "Living Room Humidity"
+    value_template: "{{ value_json * 2 }}"
+    device_class: humidity
+    unit_of_measurement: '%'
+  - platform: mqtt 
+    state_topic: "LivingRoomRelay/sensors/humidity"
+    name: "Living Room Temperature"
+    device_class: temperature
+    unit_of_measurement: '°F'
+
+  - platform: unifi
+    host: !secret ip_unifi
+    username: !secret user_email
+    password: !secret pw_unifi
+    monitored_conditions:
+      - www
+      - lan
+      - wan
+      - wlan
+      - alerts
+      - firmware
+    
+  - platform: history_stats
+    name: Patio Door Counter
+    entity_id: binary_sensor.door_patio
+    state: 'off'
+    type: count
+    duration: 00:05:00
+    end: '{{ now() }}'
+    
+################################################################################
+# Covers
+################################################################################
+cover:
+- platform: template
+  covers:
+    workshop_stall:
+     friendly_name: "Workshop Stall"
+     value_template: "{{ is_state('switch.workshop_garage_door', 'on') }}"
+     open_cover:
+        service: switch.turn_on
+        data:
+         entity_id: switch.workshop_garage_door
+     close_cover:
+        service: switch.turn_off
+        data:
+         entity_id: switch.workshop_garage_door
+     icon_template: >-
+        {% if is_state('switch.workshop_garage_door', 'on') %}
+         mdi:garage-open
+        {% else %}
+         mdi:garage
+        {% endif %}
+
+################################################################################
+# Cameras
+################################################################################
+camera:
+- platform: foscam
+  name: Living Room
+  ip: !secret ip_living_room_camera
+  username: !secret user_foscam
+  password: !secret pw_foscam
+  rtsp_port: 88
+
+- platform: ffmpeg
+  name: Basement
+  input: !secret url_basement_rtsp
+
+################################################################################
+# Device Tracking
+################################################################################
+device_tracker:
+- platform: ping
+  hosts:
+     anthony_ping: !secret ip_anthony_phone
+     sara_ping: !secret ip_sara_phone
+
+################################################################################
+# Virtual Switches
+################################################################################
+input_boolean:
+  guest_mode:
+    name: 'Guest Mode'
+    icon: mdi:account-alert

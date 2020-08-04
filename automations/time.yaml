@@ -1,0 +1,12 @@
+################################################################################
+# Events triggered by Time of day (or sun)
+################################################################################
+
+
+    
+# - alias: '[Time_] Restart Foscam'
+#   trigger:
+#   - platform: time
+#     at: '01:30:01'
+#   action:
+#   - service: rest_command.living_room_ptz_forward

@@ -1,0 +1,83 @@
+esphome:
+  name: living_room_blinds
+  platform: ESP8266
+  board: nodemcuv2
+  esp8266_restore_from_flash: true
+
+wifi:
+  networks:
+  - ssid: !secret ssid_iot
+    password: !secret pw_wifi_iot
+  manual_ip:
+    static_ip: !secret ip_living_room_blinds
+    gateway: !secret ip_iot_gateway
+    subnet: 255.255.255.0
+    dns1: !secret ip_iot_gateway
+    dns2: 8.8.8.8
+  ap:
+    ssid: "Living Room Blinds"
+    password: !secret pw_blinds
+
+captive_portal:
+logger:
+api:
+ota:
+  
+output:
+  - platform: gpio
+    id: 'living_room_left_1'
+    pin: D1
+  - platform: gpio
+    id: 'living_room_left_2'
+    pin: D2
+  - platform: gpio
+    id: 'living_room_right_1'
+    pin: D5
+  - platform: gpio
+    id: 'living_room_right_2'
+    pin: D6
+
+switch:
+  - platform: output
+    name: "lr1"
+    output: 'living_room_left_1'
+    id: lr1
+  - platform: output
+    name: "lr2"
+    output: 'living_room_left_2'
+    id: lr2
+  - platform: output
+    name: "lr3"
+    output: 'living_room_right_1'
+    id: lr3
+  - platform: output
+    name: "lr4"
+    output: 'living_room_right_2'
+    id: lr4
+
+cover:
+  - platform: time_based
+    name: "Living Room Left"
+    id: lr_left
+    open_duration: 51s
+    close_duration: 50s
+    open_action:
+      - switch.turn_on: lr1
+    close_action:
+      - switch.turn_on: lr2
+    stop_action:
+      - switch.turn_off: lr1
+      - switch.turn_off: lr2
+
+  - platform: time_based
+    name: "Living Room Right"
+    id: lr_right
+    open_duration: 66s
+    close_duration: 58s
+    open_action:
+      - switch.turn_on: lr3
+    close_action:
+      - switch.turn_on: lr4
+    stop_action:
+      - switch.turn_off: lr3
+      - switch.turn_off: lr4

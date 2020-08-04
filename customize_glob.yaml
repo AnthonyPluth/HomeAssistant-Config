@@ -1,0 +1,20 @@
+"light.*":
+  icon: mdi:lightbulb
+"switch.*":
+  icon: mdi:lightbulb
+"switch.*_exhaust":
+  icon: mdi:fan
+
+"sensor.temperature*":
+  icon: mdi:thermometer
+"sensor.illumination*":
+  icon: mdi:theme-light-dark
+"sensor.zone_*":
+  icon: mdi:water
+
+"binary_sensor.motion_*":
+  device_class: motion
+"binary_sensor.window_*":
+  device_class: window
+"binary_sensor.door_*":
+  device_class: door
