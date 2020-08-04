@@ -10,7 +10,7 @@ user_unifi: {{ .Data.data.user_unifi }}
 user_foscam: {{ .Data.data.user_foscam }}
 
 # passwords
-pw_unifi_ssh: {{ .Data.data.pw_unifi_ssh }}
+pw_unifi: {{ .Data.data.pw_unifi }}
 pw_ups: {{ .Data.data.pw_ups }}
 pw_cbyge: {{ .Data.data.pw_cbyge }}
 pw_foscam: {{ .Data.data.pw_foscam }}

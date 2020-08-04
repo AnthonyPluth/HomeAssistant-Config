@@ -80,12 +80,6 @@ var:
 # Notifications
 ################################################################################
 notify:
-- name: Google Assistant
-  platform: rest
-  resource: !secret url_GA
-- name: Google Assistant Command
-  platform: rest
-  resource: !secret url_GAC
 - name: ALL_DEVICES
   platform: group
   services:
@@ -104,7 +98,7 @@ rest_command:
     content_type: 'application/json'
     payload: '{"command":"{{ command }}", "user":"Home Assistant", "converse":true}'
   assistant_relay:
-    url: !secret url_google_assistanta
+    url: !secret url_google_assistant
     method: POST
     content_type: 'application/json'
     payload: '{"command":"{{ command }}", "user":"Home Assistant"}'
